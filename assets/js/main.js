@@ -1,598 +1,903 @@
-(function ($) {
-  "use strict";
+﻿/*
+    Bernd - Clean & Minimal Portfolio HTML5 Template
+    Version: 1.0.1
+    Author: Mountain-Themes
+    Author URL: https://themeforest.net/user/mountain-themes
+    Bernd © 2023. Design & Coded by Mountain-Themes.
+    
+    TABLE OF CONTENTS
+    ---------------------------
+     1. Loading
+     2. Mobile Menu
+     3. Text animation
+     4. Mini Cart
+     5. Skillbars
+     6. Counter
+     7. LightCase
+     8. Resize blocks
+     9. Portfolio
+     10. Wow
+     11. Parallax
+     12. Flex Slider
+     13. Contact Form
+     14. Google Map
+*/
 
-  var imJs = {
-    m: function (e) {
-      imJs.d();
-      imJs.methods();
-    },
-    d: function (e) {
-      (this._window = $(window)),
-        (this._document = $(document)),
-        (this._body = $("body")),
-        (this._html = $("html"));
-    },
 
-    methods: function (e) {
-      imJs.backToTopInit();
-      imJs.mobileMenuActive();
-      imJs.magnificPopupActivation();
-      imJs.stickyHeader();
-      imJs.contactForm();
-      imJs.wowActive();
-      imJs.awsActivation();
-      imJs.demoActive();
-      imJs.activePopupDemo();
-      imJs.onePageNav();
-      imJs.onePageNav2();
-      imJs.onePageNavMobile();
-      imJs.stickyAdjust();
-      imJs._slickactivation();
-      imJs.clapAnimation();
-      imJs.stopVideo();
-      imJs.plyrVideo();
-      imJs.swiperSlideronModal();
-    },
+  jQuery.noConflict()(function ($) {
 
-    plyrVideo: function () {
-      // init video player for courses Curriculum
-      const player = new Plyr(".rbt-player");
-    },
+  'use strict';
 
-    stopVideo: function () {
-      $(".modal").on("show.bs.modal", function (event) {
-        $(this).find("iframe").attr("src", $(event.relatedTarget).data("url"));
-      });
-      $(".modal").on("hidden.bs.modal", function (e) {
-        $(this).find("iframe").attr("src", "");
-      });
-
-      $.fn.stopVideoAfterLoadmore = function () {
-        return this.each(function () {
-          $(".modal").on("show.bs.modal", function (event) {
-            $(this)
-              .find("iframe")
-              .attr("src", $(event.relatedTarget).data("url"));
-          });
-          $(".modal").on("hidden.bs.modal", function (e) {
-            $(this).find("iframe").attr("src", "");
-          });
-        });
-      };
-      $(document).on("click", ".close", function () {
-        $(this).stopVideoAfterLoadmore();
-      });
-    },
-
-    swiperSlideronModal: function () {
-      $(document).on('shown.bs.modal','.modal', function () {
-        setTimeout(function(){
-          if (typeof(Event) === 'function') {
-            // modern browsers
-            window.dispatchEvent(new Event('resize'));
-          } else {
-            // for IE and other old browsers
-            // causes deprecation warning on modern browsers
-            var evt = window.document.createEvent('UIEvents');
-            evt.initUIEvent('resize', true, false, window, 0);
-            window.dispatchEvent(evt);
-          }
-          // console.log('Resize');
-        }, 500);
-      });
-
-    },
-
-    clapAnimation: function () {
-      $.fn.clapAnimateButton = function () {
-        return this.each(function () {
-          $(this).addClass("animate");
-          setTimeout(() => {
-            $(this).removeClass("animate");
-          }, 300);
-        });
-      };
-      $(document).on("click", ".like-button", function () {
-        $(this).clapAnimateButton();
-      });
-    },
-
-    onePageNav: function () {
-      $("#sideNav").onePageNav({
-        currentClass: "current",
-        changeHash: false,
-        scrollSpeed: 500,
-        scrollThreshold: 0.8,
-        filter: ":not(.external-link)",
-        easing: "swing",
-      });
-    },
-    onePageNav2: function () {
-      $("#onepagenav").onePageNav({
-        currentClass: "current",
-        changeHash: false,
-        scrollSpeed: 500,
-        scrollThreshold: 0.8,
-        filter: ":not(.external-link)",
-        easing: "swing",
-      });
-    },
-    onePageNavMobile: function () {
-      $("#sideNavMobile").onePageNav({
-        currentClass: "current",
-        changeHash: false,
-        scrollSpeed: 500,
-        scrollThreshold: 0.8,
-        filter: ":not(.external-link)",
-        easing: "swing",
-      });
-    },
-
-    onePageTopFixed: function () {
-      if ($(".onepagefixed").length) {
-        var fixedElem = $(".onepagefixed"),
-          distance = fixedElem.offset().top - 100,
-          $window = $(window),
-          totalDistance =
-            $(".service-scroll-navigation-area").outerHeight() + distance;
-
-        $(window).on("scroll", function () {
-          if ($window.scrollTop() >= distance) {
-            fixedElem.css({
-              position: "fixed",
-              left: "0",
-              right: "0",
-              top: "0",
-              zIndex: "5",
-            });
-          } else {
-            fixedElem.removeAttr("style");
-          }
-          if ($window.scrollTop() >= totalDistance) {
-            fixedElem.removeAttr("style");
-          }
-        });
-      }
-    },
-
-    activePopupDemo: function (e) {
-      $(".popuptab-area li a.demo-dark").on("click", function (e) {
-        $(".demo-modal-area").addClass("dark-version");
-        $(".demo-modal-area").removeClass("white-version");
-      });
-      $(".popuptab-area li a.demo-light").on("click", function (e) {
-        $(".demo-modal-area").removeClass("dark-version");
-        $(".demo-modal-area").addClass("white-version");
-      });
-    },
-
-    demoActive: function (e) {
-      $(".rn-right-demo").on("click", function (e) {
-        $(".demo-modal-area").addClass("open");
-      });
-      $(".demo-close-btn").on("click", function (e) {
-        $(".demo-modal-area").removeClass("open");
-      });
-    },
-
-    contactForm: function () {
-      $(".rwt-dynamic-form").on("submit", function (e) {
-        e.preventDefault();
-        var _self = $(this);
-        var __selector = _self.closest("input,textarea");
-        _self.closest("div").find("input,textarea").removeAttr("style");
-        _self.find(".error-msg").remove();
-        _self
-          .closest("div")
-          .find('button[type="submit"]')
-          .attr("disabled", "disabled");
-        var data = $(this).serialize();
-        $.ajax({
-          url: "mail.php",
-          type: "post",
-          dataType: "json",
-          data: data,
-          success: function (data) {
-            _self
-              .closest("div")
-              .find('button[type="submit"]')
-              .removeAttr("disabled");
-            if (data.code == false) {
-              _self.closest("div").find('[name="' + data.field + '"]');
-              _self
-                .find(".rn-btn")
-                .after('<div class="error-msg"><p>*' + data.err + "</p></div>");
-            } else {
-              $(".error-msg").hide();
-              $(".form-group").removeClass("focused");
-              _self
-                .find(".rn-btn")
-                .after(
-                  '<div class="success-msg"><p>' + data.success + "</p></div>"
-                );
-              _self.closest("div").find("input,textarea").val("");
-
-              setTimeout(function () {
-                $(".success-msg").fadeOut("slow");
-              }, 5000);
-            }
-          },
-        });
-      });
-    },
-
-    wowActive: function () {
-      new WOW().init();
-    },
-
-    stickyAdjust: function (e) {
-      // Sticky Top Adjust..,
-      $(".rbt-sticky-top-adjust").css({
-        top: 120,
-      });
-      $(".rbt-sticky-top-adjust-two").css({
-        top: 100,
-      });
-      $(".rbt-sticky-top-adjust-three").css({
-        top: 50,
-      });
-      $(".header-sticky .rbt-sticky-top-adjust").css({
-        top: 160,
-      });
-    },
-
-    testimonialActivation: function () {
-      $(".testimonial-activation").slick({
-        infinite: true,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        dots: true,
-        arrows: true,
-        adaptiveHeight: true,
-        cssEase: "linear",
-        prevArrow:
-          '<button class="slide-arrow prev-arrow"><i class="feather-arrow-left"></i></button>',
-        nextArrow:
-          '<button class="slide-arrow next-arrow"><i class="feather-arrow-right"></i></button>',
-        responsive: [
-            {
-                breakpoint: 768,
-                settings: {
-                    arrows: false,
-                    slidesToShow: 1,
-                    slidesToScroll: 1,
-                    pauseOnFocus: false,
-                    pauseOnHover: false,
-                    pauseOnDotsHover: false,
-                },
-            },
-        ],
-      });
-
-      $(".testimonial-item-one").slick({
-        infinite: true,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        dots: true,
-        arrows: true,
-        adaptiveHeight: true,
-        cssEase: "linear",
-        prevArrow:
-          '<button class="slide-arrow prev-arrow"><i class="feather-arrow-left"></i></button>',
-        nextArrow:
-          '<button class="slide-arrow next-arrow"><i class="feather-arrow-right"></i></button>',
-        responsive: [
-          {
-            breakpoint: 1200,
-            settings: {
-              arrows: false,
-            },
-          },
-        ],
-      });
-
-      $(".portfolio-slick-activation").slick({
-        infinite: false,
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        dots: false,
-        arrows: true,
-        cssEase: "linear",
-        adaptiveHeight: true,
-        prevArrow:
-          '<button class="slide-arrow prev-arrow"><i class="feather-arrow-left"></i></button>',
-        nextArrow:
-          '<button class="slide-arrow next-arrow"><i class="feather-arrow-right"></i></button>',
-        responsive: [
-          {
-            breakpoint: 1124,
-            settings: {
-              slidesToShow: 2,
-              slidesToScroll: 1,
-            },
-          },
-          {
-            breakpoint: 868,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-            },
-          },
-          {
-            breakpoint: 576,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-              dots: true,
-              arrows: false,
-            },
-          },
-        ],
-      });
-
-      $(".blog-slick-activation").slick({
-        infinite: true,
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        dots: false,
-        arrows: true,
-        cssEase: "linear",
-        adaptiveHeight: true,
-        prevArrow:
-          '<button class="slide-arrow prev-arrow"><i class="feather-arrow-left"></i></button>',
-        nextArrow:
-          '<button class="slide-arrow next-arrow"><i class="feather-arrow-right"></i></button>',
-        responsive: [
-          {
-            breakpoint: 1124,
-            settings: {
-              slidesToShow: 2,
-              slidesToScroll: 1,
-            },
-          },
-          {
-            breakpoint: 868,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-            },
-          },
-          {
-            breakpoint: 576,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-              dots: true,
-              arrows: false,
-            },
-          },
-        ],
-      });
-
-      $(".testimonial-activation-item-3").slick({
-        arrows: true,
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        adaptiveHeight: true,
-        prevArrow:
-          '<button class="slide-arrow prev-arrow"><i class="feather-arrow-left"></i></button>',
-        nextArrow:
-          '<button class="slide-arrow next-arrow"><i class="feather-arrow-right"></i></button>',
-        responsive: [
-          {
-            breakpoint: 1124,
-            settings: {
-              slidesToShow: 2,
-              slidesToScroll: 1,
-            },
-          },
-          {
-            breakpoint: 768,
-            settings: {
-              slidesToShow: 2,
-              slidesToScroll: 1,
-              arrows: false,
-            },
-          },
-          {
-            breakpoint: 577,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-              arrows: false,
-            },
-          },
-        ],
-      });
-
-      $(".brand-activation-item-5").slick({
-        arrows: true,
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 4,
-        slidesToScroll: 1,
-        adaptiveHeight: true,
-        prevArrow:
-          '<button class="slide-arrow prev-arrow"><i class="feather-arrow-left"></i></button>',
-        nextArrow:
-          '<button class="slide-arrow next-arrow"><i class="feather-arrow-right"></i></button>',
-        responsive: [
-          {
-            breakpoint: 1124,
-            settings: {
-              slidesToShow: 2,
-              slidesToScroll: 1,
-            },
-          },
-          {
-            breakpoint: 868,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-            },
-          },
-          {
-            breakpoint: 480,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-            },
-          },
-        ],
-      });
-    },
-
-    _slickactivation: function (e) {
-      $(".inbio-carousel-gallery").slick({
-        infinite: false,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        dots: true,
-        arrows: true,
-        adaptiveHeight: true,
-        prevArrow:
-          '<button class="slide-arrow prev-arrow"><i class="feather-arrow-left"></i></button>',
-        nextArrow:
-          '<button class="slide-arrow next-arrow"><i class="feather-arrow-right"></i></button>',
-      });
-    },
-
-    backToTopInit: function () {
-      // declare variable
-      var scrollTop = $(".backto-top");
-      $(window).scroll(function () {
-        // declare variable
-        var topPos = $(this).scrollTop();
-        // if user scrolls down - show scroll to top button
-        if (topPos > 250) {
-          $(scrollTop).css("opacity", "1");
-        } else {
-          $(scrollTop).css("opacity", "0");
-        }
-      });
-      //Click event to scroll to top
-      $(scrollTop).on("click", function () {
-        $("html, body").animate(
-          {
-            scrollTop: 0,
-            easingType: "linear",
-          },
-          500
-        );
-        return false;
-      });
-    },
-
-    stickyHeader: function (e) {
-      $(window).scroll(function () {
-        if ($(this).scrollTop() > 150) {
-          $(".header--sticky").addClass("sticky");
-        } else {
-          $(".header--sticky").removeClass("sticky");
-        }
-      });
-    },
-
-    magnificPopupActivation: function () {
-      var yPopup = $(".video-play-button");
-      if (yPopup.length) {
-        yPopup.magnificPopup({
-          disableOn: 700,
-          type: "iframe",
-          mainClass: "mfp-fade",
-          removalDelay: 160,
-          preloader: false,
-
-          fixedContentPos: false,
-        });
-      }
-    },
-
-    vedioActivation: function (e) {
-      $("#play-video").on("click", function (e) {
-        e.preventDefault();
-        $("#video-overlay").addClass("open");
-        $("#video-overlay").append(
-          '<iframe width="80%" height="80%" src="https://www.youtube.com/embed/7e90gBu4pas" frameborder="0" allowfullscreen></iframe>'
-        );
-      });
-
-      $(".video-overlay, .video-overlay-close").on("click", function (e) {
-        e.preventDefault();
-        close_video();
-      });
-
-      $(document).keyup(function (e) {
-        if (e.keyCode === 27) {
-          close_video();
-        }
-      });
-
-      function close_video() {
-        $(".video-overlay.open").removeClass("open").find("iframe").remove();
-      }
-    },
-
-    mobileMenuActive: function (e) {
-      $(".humberger-menu").on("click", function (e) {
-        e.preventDefault();
-        $(".popup-mobile-menu").addClass("menu-open");
-        imJs._html.css({
-          overflow: "hidden",
-        });
-      });
-
-      $(
-        ".close-menu-activation, .is-mobile-onepage.popup-mobile-menu .primary-menu .menu-item a:not(.external-link), .is-mobile-onepage.popup-mobile-menu .mainmenu-nav .menu-item a:not(.external-link)"
-      ).on("click", function (e) {
-        e.preventDefault();
-        $(".popup-mobile-menu").removeClass("menu-open");
-        $(".has-droupdown > a")
-          .removeClass("open")
-          .siblings(".submenu")
-          .removeClass("active")
-          .slideUp("400");
-        imJs._html.css({
-          overflow: "",
-        });
-      });
-
-      $(".popup-mobile-menu").on("click", function (e) {
-        e.target === this && $(".popup-mobile-menu").removeClass("menu-open");
-        imJs._html.css({
-          overflow: "",
-        });
-      });
-
-      $(".popup-mobile-menu .menu-item-has-children > a").on(
-        "click",
-        function (e) {
-          e.preventDefault();
-          $(this)
-            .siblings(".sub-menu")
-            .toggleClass("active")
-            .slideToggle("400");
-          $(this).toggleClass("open");
-          imJs._html.css({
-            overflow: "",
-          });
-        }
-      );
-
-      $(".nav-pills .nav-link").on("click", function (e) {
-        $(".rn-popup-mobile-menu").removeClass("menu-open");
-        imJs._html.css({
-          overflow: "",
-        });
-      });
-    },
-    awsActivation: function (e) {
-        setTimeout(function () { AOS.init(); }, 1000);
-    },
+  var isMobile = {
+  Android: function () {
+    return navigator.userAgent.match(/Android/i);
+  },
+  BlackBerry: function () {
+    return navigator.userAgent.match(/BlackBerry/i);
+  },
+  iPhone: function () {
+    return navigator.userAgent.match(/iPhone/i);
+  },
+  iPad: function () {
+    return navigator.userAgent.match(/iPad/i);
+  },
+  iPod: function () {
+    return navigator.userAgent.match(/iPod/i);
+  },
+  iOS: function () {
+    return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+  },
+  Opera: function () {
+    return navigator.userAgent.match(/Opera Mini/i);
+  },
+  Windows: function () {
+    return navigator.userAgent.match(/IEMobile/i);
+  },
+  any: function () {
+    return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+  }
   };
-  imJs.m();
-})(jQuery, window);
+
+
+  /* ================================= */
+  /* :::::::::: 1. Loading ::::::::::: */
+  /* ================================= */
+
+  $(document).ready(function () {
+
+    mt_minimal_loading();
+    mt_mobile_menu();
+    mt_texteffect();
+    mt_woo_minicart();
+    mt_portfolio();
+    mt_lightCase();
+    mt_shopGrid();
+    mt_wow();
+    mt_parallax();
+    mt_flexslider();
+    mt_ajax_contact_form();
+    mt_skillbars_shortcode();
+    mt_counter_shortcode();
+    mt_google_map();
+    mt_scroll_mouse();
+
+  });
+
+  function mt_minimal_loading() {
+    setTimeout(function() {
+        $('body').addClass('loaded');
+    }, 1100);
+  }
+
+
+  /* ================================= */
+  /* ::::::: 2. Mobile Menu :::::::::: */
+  /* ================================= */
+
+  function mt_mobile_menu() {
+
+  $("#bernd_menu").slicknav({
+    prependTo: 'header .col-md-12',
+    allowParentLinks: false
+  });
+  }
+
+  /* ================================= */
+  /* :::::: 3. Text animation :::::::: */
+  /* ================================= */
+
+  function mt_texteffect() {
+
+  $(function () {
+    $('.info h2').textillate();
+  });
+  }
+
+  /* ================================= */
+  /* ::::::::: 4. Mini Cart :::::::::: */
+  /* ================================= */
+
+  function mt_woo_minicart() {
+
+  $('.icon-cart').on('click', function () {
+    $('.cart-widget').toggleClass('widget-visible');
+  });
+
+    // Quantity
+    $(document).on('click', '.shop-qty .plus, .shop-qty .minus', function(){
+
+      var $this = $(this),
+        $qty = $this.siblings('.qty'),
+        current = parseInt($qty.val(), 10),
+        min = parseInt($qty.attr('min'), 10),
+        max = parseInt($qty.attr('max'), 10),
+        step = parseInt($qty.attr('step'), 10);
+
+      min = min ? min : 1;
+      max = max ? max : current + step;
+
+      if ($this.hasClass('minus') && current > min) {
+        $qty.val(current - step);
+        $qty.trigger('change');
+      }
+
+      if ($this.hasClass('plus') && current < max) {
+        $qty.val(current + step);
+        $qty.trigger('change');
+      }
+
+      return false;
+    });
+
+  }
+
+  /* ================================= */
+  /* ::::::::: 5. Skillbars :::::::::: */
+  /* ================================= */
+
+  function mt_skillbars_shortcode() {
+
+  $('.skillbar').appear(function () {
+    var skillbar = $(this).html();
+    $(this).skillBars({
+      from: 0,
+      speed: 3000,
+      interval: 100,
+      decimals: 0,
+    });
+  });
+  }
+
+  /* ================================= */
+  /* :::::::::: 6. Counter ::::::::::: */
+  /* ================================= */
+
+  function mt_counter_shortcode() {
+
+  $('.timer .number').appear(function () {
+    var counter = $(this).html();
+    $(this).countTo({
+      from: 0,
+      to: counter,
+      speed: 3000,
+      refreshInterval: 70
+    });
+  });
+  }
+
+  /* ================================= */
+  /* :::::::: 7. LightCase ::::::::::: */
+  /* ================================= */
+
+  function mt_lightCase() {
+
+  $('a.showcase').lightcase({
+    transition: 'scrollVertical',
+    speedIn: 400,
+    speedOut: 300,
+  });
+  }
+
+  /* ================================= */
+  /* :::::: 8. Resize blocks ::::::::: */
+  /* ================================= */
+
+  function mt_shopGrid() {
+
+  // Shop Grid
+  var element = $('.shopContainer');
+  element.imagesLoaded().done(function () {
+    element.isotope({
+      itemSelector: '.product',
+      masonry: {
+        columnWidth: '.product',
+        gutter: '.gutter-sizer'
+      },
+      percentPosition: true
+    });
+  });
+  $(window).on('resize', function () {
+    element.isotope();
+  }).trigger('resize');
+
+  }
+
+
+  /* ================================= */
+  /* ::::::::: 9. Portfolio :::::::::: */
+  /* ================================= */
+
+  function mt_portfolio() {
+
+  $('#grid-mosaic').cubeportfolio({
+    filters: '.portfolioFilter',
+    layoutMode: 'masonry',
+    sortByDimension: true,
+    mediaQueries: [{
+      width: 1500,
+      cols: 3,
+    }, {
+      width: 1100,
+      cols: 3,
+    }, {
+      width: 800,
+      cols: 2,
+    }, {
+      width: 480,
+      cols: 1,
+      options: {
+        caption: '',
+        gapHorizontal: 15,
+        gapVertical: 15,
+      }
+    }],
+    defaultFilter: '*',
+    animationType: 'quicksand',
+    gapHorizontal: 65,
+    gapVertical: 65,
+    gridAdjustment: 'responsive',
+    caption: 'zoom',
+    displayType: 'sequentially',
+    displayTypeSpeed: 100,
+
+    plugins: {
+      loadMore: {
+        element: '.load-more',
+        action: 'click',
+        loadItems: 3,
+      }
+    },
+  });
+
+  $('#grid-just').cubeportfolio({
+    filters: '.portfolioFilter',
+    layoutMode: 'mosaic',
+    sortByDimension: true,
+    mediaQueries: [{
+      width: 1500,
+      cols: 3,
+    }, {
+      width: 1100,
+      cols: 3,
+    }, {
+      width: 800,
+      cols: 2,
+    }, {
+      width: 480,
+      cols: 1,
+      options: {
+        caption: '',
+        gapHorizontal: 15,
+        gapVertical: 15,
+      }
+    }],
+    defaultFilter: '*',
+    animationType: 'quicksand',
+    gapHorizontal: 65,
+    gapVertical: 65,
+    gridAdjustment: 'responsive',
+    caption: 'zoom',
+    displayType: 'sequentially',
+    displayTypeSpeed: 100,
+
+    plugins: {
+      loadMore: {
+        element: '.load-more',
+        action: 'click',
+        loadItems: 3,
+      }
+    },
+  });
+
+  $('#grid-blog').cubeportfolio({
+    filters: '.portfolioFilter',
+    layoutMode: 'mosaic',
+    sortByDimension: true,
+    mediaQueries: [{
+      width: 1500,
+      cols: 1,
+    }, {
+      width: 1100,
+      cols: 1,
+    }, {
+      width: 800,
+      cols: 1,
+    }, {
+      width: 480,
+      cols: 1,
+      options: {
+        caption: '',
+        gapHorizontal: 65,
+        gapVertical: 65,
+      }
+    }],
+    defaultFilter: '*',
+    animationType: 'quicksand',
+    gapHorizontal: 65,
+    gapVertical: 65,
+    gridAdjustment: 'responsive',
+    caption: 'zoom',
+    displayType: 'sequentially',
+    displayTypeSpeed: 100,
+
+    plugins: {
+      loadMore: {
+        element: '.load-more',
+        action: 'click',
+        loadItems: 3,
+      }
+    },
+  });
+
+  $('#grid-blog-2').cubeportfolio({
+    filters: '.portfolioFilter',
+    layoutMode: 'masonry',
+    sortByDimension: true,
+    mediaQueries: [{
+      width: 1500,
+      cols: 2,
+    }, {
+      width: 1100,
+      cols: 2,
+    }, {
+      width: 800,
+      cols: 1,
+    }, {
+      width: 480,
+      cols: 1,
+      options: {
+        caption: '',
+        gapHorizontal: 65,
+        gapVertical: 65,
+      }
+    }],
+    defaultFilter: '*',
+    animationType: 'quicksand',
+    gapHorizontal: 65,
+    gapVertical: 65,
+    gridAdjustment: 'responsive',
+    caption: 'zoom',
+    displayType: 'sequentially',
+    displayTypeSpeed: 100,
+
+    plugins: {
+      loadMore: {
+        element: '.load-more',
+        action: 'click',
+        loadItems: 3,
+      }
+    },
+  });
+
+
+  $('#grid-shop').cubeportfolio({
+    filters: '.portfolioFilter',
+    layoutMode: 'masonry',
+    sortByDimension: true,
+    mediaQueries: [{
+      width: 1500,
+      cols: 3,
+    }, {
+      width: 1100,
+      cols: 3,
+    }, {
+      width: 800,
+      cols: 3,
+    }, {
+      width: 480,
+      cols: 2,
+    }, {
+      width: 320,
+      cols: 1,
+      options: {
+        caption: '',
+        gapHorizontal: 45,
+        gapVertical: 35,
+      }
+    }],
+    defaultFilter: '*',
+    animationType: 'quicksand',
+    gapHorizontal: 45,
+    gapVertical: 35,
+    gridAdjustment: 'responsive',
+    caption: 'zoom',
+    displayType: 'sequentially',
+    displayTypeSpeed: 100,
+
+    plugins: {
+      loadMore: {
+        element: '.load-more',
+        action: 'click',
+        loadItems: 3,
+      }
+    },
+  });
+
+}
+
+
+  /* ================================= */
+  /* :::::::::::: 10. Wow :::::::::::: */
+  /* ================================= */
+
+  function mt_wow() {
+  new WOW().init();
+  }
+
+  /* ================================= */
+  /* :::::::: 11. Parallax ::::::::::: */
+  /* ================================= */
+
+  function mt_parallax() {
+      $( '.parallax' ).each( function() {
+        $( this ).jarallax( {
+          loop: true,
+          speed: 0.8,
+          videoSrc: $( this ).attr( 'data-video' ),
+          videoStartTime: $( this ).data( 'start' ),
+          videoEndTime: $( this ).data( 'end' ),
+        } );
+      } );
+  }
+
+/* ================================= */
+/* :::::: 12. Scroll mouse ::::::::: */
+/* ================================= */
+
+  function mt_scroll_mouse() {
+      $('.header-cover .mouse a').on( "click", function() {
+          $('html, body').animate({
+              scrollTop: $( $(this).attr('href') ).offset().top
+          }, 500);
+          return false;
+      });
+}
+
+  /* ================================= */
+  /* ::::::: 13. Flex Slider ::::::::: */
+  /* ================================= */
+
+  function mt_flexslider() {
+  $('.flexslider').flexslider({
+    controlNav: false,
+    prevText: '<i class="fa fa-angle-left"></i>',
+    nextText: '<i class="fa fa-angle-right"></i>',
+    slideshowSpeed: '3000',
+    pauseOnHover: true
+  });
+  }
+
+  /* ================================= */
+  /* :::::: 14. Contact Form ::::::::: */
+  /* ================================= */
+
+  function mt_ajax_contact_form() {
+
+      $('#submit').on("click", function() {  
+           // validate and process form here 
+           $("#ajax-contact-form").validate({
+             
+                  rules:{
+
+                        name:{
+                            required: true,
+                        },
+
+                        email:{
+                            required: true,
+                            email: true,
+                        },
+
+                        phone:{
+                            required: true,
+                        },
+
+                        msg:{
+                            required: true,
+                        },
+                   },
+
+                   messages:{
+
+                          name:{
+                            required: "The field is required.",
+                        },
+
+                        email:{
+                            required: "The field is required.",
+                            email: "The e-mail address entered is invalid.",
+                        },
+
+                        phone:{
+                            required: "The field is required.",
+                        },
+
+                          msg:{
+                            required: "The field is required.",
+                        },
+
+                   },
+
+                // JQuery's awesome submit handler.
+                submitHandler: function(form) {
+
+                     // Create variables from the form
+                     var name = $('input#name').val(); 
+                     var email = $('input#email').val();  
+                     var phone = $('input#phone').val(); 
+                     var msg = $('textarea#msg').val();
+
+                     // Create variables that will be sent in a URL string to contact.php
+                     var dataString = '&name='+ name + '&email=' + email + '&phone=' + phone + '&msg=' + msg;
+        
+                        $.ajax({
+                            type: "POST",
+                            url: "php/contact.php",
+                            data: dataString,
+                            success: function(data) {
+                                  if(data == 'OK') {
+                                    var result = '<div class="notification_ok"><i class="fa fa-check"></i> Your email was sent. Thanks!</div>';
+                                    $("#ajax-contact-form").find('input[type=text], input[type=email], textarea').val("");
+                                   
+                                  } else {
+                                  result = data;
+                                 }
+                                 $('#note').html(result).fadeIn();
+                                 setTimeout(function () {
+                                   $('#note').html(result).fadeOut();
+                                 }, 4000);
+           
+                          }
+                         
+                      });
+                     return false;
+               }
+          });
+    });
+
+  }
+
+  /* ================================= */
+  /* :::::::: 14. Google Map ::::::::: */
+  /* ================================= */
+
+  function mt_google_map() {
+
+  if ($('#google-container').length) {
+
+    //set your google maps parameters
+    var latitude = -37.8602828,
+      longitude = 145.079616,
+      map_zoom = 10;
+
+    //google map custom marker icon - .png fallback for IE11
+    var is_internetExplorer11 = navigator.userAgent.toLowerCase().indexOf('trident') > -1;
+    var marker_url = (is_internetExplorer11) ? 'assets/images/icon-location.png' : 'assets/images/icon-location.png';
+
+    //define the basic color of your map, plus a value for saturation and brightness
+    var main_color = '#2d313f',
+      saturation_value = -70,
+      brightness_value = 5;
+
+    //we define here the style of the map
+    var style = [{
+        //set saturation for the labels on the map
+        elementType: 'labels',
+        stylers: [{
+          saturation: saturation_value
+        }, ]
+      },
+      { //poi stands for point of interest - don't show these lables on the map 
+        featureType: 'poi',
+        elementType: 'labels',
+        stylers: [{
+          visibility: 'off'
+        }, ]
+      },
+      {
+        //don't show highways lables on the map
+        featureType: 'road.highway',
+        elementType: 'labels',
+        stylers: [{
+          visibility: 'off'
+        }, ]
+      },
+      {
+        //don't show local road lables on the map
+        featureType: 'road.local',
+        elementType: 'labels.icon',
+        stylers: [{
+          visibility: 'off'
+        }, ]
+      },
+      {
+        //don't show arterial road lables on the map
+        featureType: 'road.arterial',
+        elementType: 'labels.icon',
+        stylers: [{
+          visibility: 'off'
+        }, ]
+      },
+      {
+        //don't show road lables on the map
+        featureType: 'road',
+        elementType: 'geometry.stroke',
+        stylers: [{
+          visibility: 'off'
+        }, ]
+      },
+      //style different elements on the map
+      {
+        featureType: 'transit',
+        elementType: 'geometry.fill',
+        stylers: [{
+            hue: main_color
+          },
+          {
+            visibility: 'on'
+          },
+          {
+            lightness: brightness_value
+          },
+          {
+            saturation: saturation_value
+          },
+        ]
+      },
+      {
+        featureType: 'poi',
+        elementType: 'geometry.fill',
+        stylers: [{
+            hue: main_color
+          },
+          {
+            visibility: 'on'
+          },
+          {
+            lightness: brightness_value
+          },
+          {
+            saturation: saturation_value
+          },
+        ]
+      },
+      {
+        featureType: 'poi.government',
+        elementType: 'geometry.fill',
+        stylers: [{
+            hue: main_color
+          },
+          {
+            visibility: 'on'
+          },
+          {
+            lightness: brightness_value
+          },
+          {
+            saturation: saturation_value
+          },
+        ]
+      },
+      {
+        featureType: 'poi.attraction',
+        elementType: 'geometry.fill',
+        stylers: [{
+            hue: main_color
+          },
+          {
+            visibility: 'on'
+          },
+          {
+            lightness: brightness_value
+          },
+          {
+            saturation: saturation_value
+          },
+        ]
+      },
+      {
+        featureType: 'poi.business',
+        elementType: 'geometry.fill',
+        stylers: [{
+            hue: main_color
+          },
+          {
+            visibility: 'on'
+          },
+          {
+            lightness: brightness_value
+          },
+          {
+            saturation: saturation_value
+          },
+        ]
+      },
+      {
+        featureType: 'transit',
+        elementType: 'geometry.fill',
+        stylers: [{
+            hue: main_color
+          },
+          {
+            visibility: 'on'
+          },
+          {
+            lightness: brightness_value
+          },
+          {
+            saturation: saturation_value
+          },
+        ]
+      },
+      {
+        featureType: 'transit.station',
+        elementType: 'geometry.fill',
+        stylers: [{
+            hue: main_color
+          },
+          {
+            visibility: 'on'
+          },
+          {
+            lightness: brightness_value
+          },
+          {
+            saturation: saturation_value
+          },
+        ]
+      },
+      {
+        featureType: 'landscape',
+        stylers: [{
+            hue: main_color
+          },
+          {
+            visibility: 'on'
+          },
+          {
+            lightness: brightness_value
+          },
+          {
+            saturation: saturation_value
+          },
+        ]
+
+      },
+      {
+        featureType: 'road',
+        elementType: 'geometry.fill',
+        stylers: [{
+            hue: main_color
+          },
+          {
+            visibility: 'on'
+          },
+          {
+            lightness: brightness_value
+          },
+          {
+            saturation: saturation_value
+          },
+        ]
+      },
+      {
+        featureType: 'road.highway',
+        elementType: 'geometry.fill',
+        stylers: [{
+            hue: main_color
+          },
+          {
+            visibility: 'on'
+          },
+          {
+            lightness: brightness_value
+          },
+          {
+            saturation: saturation_value
+          },
+        ]
+      },
+      {
+        featureType: 'water',
+        elementType: 'geometry',
+        stylers: [{
+            hue: main_color
+          },
+          {
+            visibility: 'on'
+          },
+          {
+            lightness: brightness_value
+          },
+          {
+            saturation: saturation_value
+          },
+        ]
+      }
+    ];
+
+
+    //set google map options
+    var map_options = {
+      center: new google.maps.LatLng(latitude, longitude),
+      zoom: map_zoom,
+      panControl: false,
+      zoomControl: false,
+      mapTypeControl: false,
+      streetViewControl: false,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      scrollwheel: false,
+      styles: style,
+    }
+
+    //inizialize the map
+    var map = new google.maps.Map(document.getElementById('google-container'), map_options);
+    //add a custom marker to the map      
+
+
+
+    var marker = new google.maps.Marker({
+      position: new google.maps.LatLng(latitude, longitude),
+      map: map,
+      title: 'Melbourne, Australia',
+      visible: true,
+      icon: marker_url,
+    });
+
+ 
+
+
+    google.maps.event.addDomListener(window, "resize", function () {
+      var center = map.getCenter();
+      google.maps.event.trigger(map, "resize");
+      map.setCenter(center);
+
+    });
+
+
+    //add custom buttons for the zoom-in/zoom-out on the map
+    function CustomZoomControl(controlDiv, map) {
+      //grap the zoom elements from the DOM and insert them in the map 
+      var controlUIzoomIn = document.getElementById('zoom-in'),
+        controlUIzoomOut = document.getElementById('zoom-out');
+      controlDiv.appendChild(controlUIzoomIn);
+      controlDiv.appendChild(controlUIzoomOut);
+
+      // Setup the click event listeners and zoom-in or out according to the clicked element
+      google.maps.event.addDomListener(controlUIzoomIn, 'click', function () {
+        map.setZoom(map.getZoom() + 1)
+      });
+      google.maps.event.addDomListener(controlUIzoomOut, 'click', function () {
+        map.setZoom(map.getZoom() - 1)
+      });
+    }
+
+    var zoomControlDiv = document.createElement('div');
+    var zoomControl = new CustomZoomControl(zoomControlDiv, map);
+
+    //insert the zoom div on the top left of the map
+    map.controls[google.maps.ControlPosition.LEFT_TOP].push(zoomControlDiv);
+  }
+  }
+
+  });
